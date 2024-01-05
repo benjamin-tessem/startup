@@ -1,1 +1,1 @@
-some text to the file
+some text to the file, to test the conflict
