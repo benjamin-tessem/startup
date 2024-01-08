@@ -26,4 +26,7 @@ git commit -m "Commit message"
 git push
 ```
 
+## TODO:
+ONce the basics are done, update the cady config file to have startup.tessem.dev look within the tessem.dev folder for the index.html file, rather than the root of the folder to reduce the mess.
+
 ## Bottom of notes
