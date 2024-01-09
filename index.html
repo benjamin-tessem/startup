@@ -60,15 +60,31 @@
     </header>
 
     <main class="container-fluid h-100">
-      <h1>Welcome</h1>
-      <p>Login to play</p>
-      <form method="get" action="play.html">
-        <label for="name">Name</label>
-        <input type="text" id="name" placeholder="Your name here" />
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Your password here" />
-        <button type="submit">Login</button>
-      </form>
+      <div class="card">
+        <div
+          class="card-body d-flex flex-column justify-content-around align-items-center gap-1"
+        >
+          <h1 class="card-title">Welcome</h1>
+          <h2 class="card-subtitle text-body-secondary">Login to play</h2>
+
+          <form method="get" action="play.html">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="ename"
+                aria-describedby="name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" />
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+      </div>
     </main>
 
     <!-- create a simple footer with bootstrap that is dark background just has my name -->
