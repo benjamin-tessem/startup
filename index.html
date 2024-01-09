@@ -15,9 +15,11 @@
 
     <link rel="stylesheet" href="main.css" />
   </head>
-  <body>
+  <body
+    class="min-vh-100 d-flex flex-column justify-content-between align-items-center bg-light"
+  >
     <!-- Use header, main, and footer elements to give semantic structure -->
-    <header>
+    <header class="w-100">
       <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">Tetris Rush</a>
@@ -57,7 +59,7 @@
       </nav>
     </header>
 
-    <main class="container-fluid">
+    <main class="container-fluid h-100">
       <h1>Welcome</h1>
       <p>Login to play</p>
       <form method="get" action="play.html">
@@ -71,14 +73,12 @@
 
     <!-- create a simple footer with bootstrap that is dark background just has my name -->
     <footer
-      class="container-fluid bg-dark text-light d-flex justify-content-between align-items-center"
+      class="container-fluid bg-dark text-light d-flex flex-column justify-content-center align-items-center text-light py-2"
     >
-      <hr />
-      <span class="text-light">Ben Tessem</span>
+      <div>&copy;Ben Tessem</div>
       <a
         href="https://github.com/benjamin-tessem/startup"
-        class="text-light"
-        class="text-light text-decoration-none"
+        class="text-decoration-none text-light"
         >GitHub</a
       >
     </footer>
