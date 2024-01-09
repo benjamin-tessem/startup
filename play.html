@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Tell browsers not to scale the viewport automatically -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris Rush</title>
+    <link rel="icon" href="favicon.ico" />
+  </head>
+  <body>
+    <!-- Use header, main, and footer elements to give semantic structure -->
+    <header>
+      <h1>Simon<sup>&reg;</sup></h1>
+
+      <!-- Navigation elements -->
+      <nav>
+        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
+        <menu>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="play.html">Play</a></li>
+          <li><a href="scores.html">Scores</a></li>
+          <li><a href="about.html">About</a></li>
+        </menu>
+      </nav>
+
+      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
+      <hr />
+    </header>
+
+    <main>
+        <!-- Store all children in a flex row, equally spread, unless mobile at which use flex column -->
+      <div class="players">
+        Player:
+        <span class="player-name">Current Player</span>
+      </div>
+
+      <div>
+        <h4>Current Scores:</h4>
+        <ul class="notification">
+          <li class="player-name">Tim: 600 points</li>
+          <li class="player-name">Ada: 300 points</li>
+          <li class="player-name">Current Player: 0 points</li>
+        </ul>
+      </div>
+
+      <!-- More formatting with old style HTML -->
+      <br />
+
+      <div>
+        <label for="count">Score</label>
+        <input type="text" id="count" value="--" readonly />
+      </div>
+
+      <br />
+
+      <div>
+        <button>Reset</button>
+      </div>
+
+      <br />
+
+      <div id="canvas-container">
+        <!-- Canvas will be inflated with JS later on, for the main game loop -->
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <script>
+          // Get the canvas element from the DOM
+          const canvas = document.getElementById("canvas");
+
+          // Get the canvas context
+          const ctx = canvas.getContext("2d");
+          // Set the canvas background color
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Set the fill color
+          ctx.fillStyle = "red";
+
+          // Draw a rectangle with the fill color in the center of the canvas
+          ctx.fillRect(canvas.width / 2 - 150 / 2, canvas.height / 2 - 150 / 2, 150, 150);
+        </script>
+      </div>
+
+      <!-- Place into a Flex column when adding css -->
+      <div>
+        <h4>Current Score: 99999</h4>
+      </div>
+    </main>
+
+    <footer>
+      <hr />
+      <span class="text-reset">Author Name(s)</span>
+      <br />
+      <a href="https://github.com/benjamin-tessem/startup">GitHub</a>
+    </footer>
+  </body>
+</html>
