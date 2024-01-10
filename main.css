@@ -1,0 +1,12 @@
+.banner {
+  /* On larger screens make the height 30em, on smaller screens set height to auto */
+  width: 100%;
+  height: 30em;
+  object-fit: cover;
+}
+
+@media screen and (max-width: 600px) {
+  .banner {
+    height: auto;
+  }
+}

@@ -60,96 +60,179 @@
     </header>
 
     <main
-      class="container-fluid h-100 d-flex justify-content-around align-items-center gap-2 flex-grow-1"
+      class="container-fluid h-100 flex-grow-1 d-flex flex-column justify-content-center align-items-center gx-0"
     >
-      <!-- Store all children in a flex row, equally spread, unless mobile at which use flex column -->
-      <div
-        class="d-flex flex-column flex-md-row flex-grow-1 justify-content-around align-items-md-center gap-2 h-100"
-      >
-        <div class="scores-stack">
-          <!-- Not sure if it makes sense to have the users name in two places on the screen? Maybe mobile only? -->
-          <!-- <div class="players">
-          Player:
-          <span class="player-name">Current Player</span>
-        </div> -->
+      <!-- Canvas will be inflated with JS later on, for the main game loop -->
+      <canvas id="game-canvas" class="w-100 h-100 d-block flex-grow-1"></canvas>
+      <script>
+        // Get the canvas element from the DOM
+        const canvas = document.getElementById("game-canvas");
+        // Get the canvas context
+        const ctx = canvas.getContext("2d");
+        const observer = new ResizeObserver((entries) => {
+          canvas.width = canvas.clientWidth;
+          canvas.height = canvas.clientHeight;
+        });
+        observer.observe(canvas);
 
-          <div class="card">
-            <div class="card-header">Current Player Scores:</div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Tim: 600 points</li>
-              <li class="list-group-item">Ada: 300 points</li>
-              <li class="list-group-item">Current Player: 0 points</li>
-            </ul>
-          </div>
-        </div>
+        let frameCount = 0;
+        let playerScore = 0;
 
-        <div id="canvas-container" class="flex-grow-1">
-          <!-- Canvas will be inflated with JS later on, for the main game loop -->
-          <canvas id="game-canvas" class="w-100"></canvas>
-          <script>
-            // Get the canvas element from the DOM
-            const canvas = document.getElementById("game-canvas");
+        // Dummy player data
+        const currentUser = { name: "Player 1", score: 100 };
+        let currentBlock = { x: 0, y: 0, color: "pink", width: 50, height: 50 };
+        // Dummy next block data
+        const nextBlock = { color: "blue", width: 50, height: 50 };
 
-            // Get the canvas context
-            const ctx = canvas.getContext("2d");
-            // Set the canvas background color
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Dummy player data
+        const players = [
+          { name: "Player 1", score: 100 },
+          { name: "Player 2", score: 75 },
+          { name: "Player 3", score: 50 },
+        ];
 
-            // Set the fill color
-            ctx.fillStyle = "red";
+        function generateSequence() {
+          const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
 
-            // Draw a rectangle with the fill color in the center of the canvas
-            ctx.fillRect(
-              canvas.width / 2 - 150 / 2,
-              canvas.height / 2 - 150 / 2,
-              150,
-              150
-            );
-          </script>
-        </div>
-      </div>
+          while (sequence.length) {
+            const rand = Math.floor(Math.random() * sequence.length);
+            const name = sequence.splice(rand, 1)[0];
+            console.log(name);
+          }
+        }
 
-      <!-- Next Tetromino -->
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Next Block:</h5>
+        function updateGame() {
+          // Update game logic here
 
-          <canvas id="next-block" class="w-100"></canvas>
-          <script>
-            // Get the canvas element from the DOM
-            const nextBlockCanvas = document.getElementById("next-block");
+          // For demonstration purposes, let's move the current block down
+          currentBlock.y += 1;
 
-            nextBlockCanvas.height = nextBlockCanvas.width;
+          // Update the score (increment for simplicity)
+          playerScore += 1;
 
-            // Get the canvas context
-            const nextBlockCtx = nextBlockCanvas.getContext("2d");
-            // Set the canvas background color
-            nextBlockCtx.fillStyle = "black";
-            nextBlockCtx.fillRect(
-              0,
-              0,
-              nextBlockCanvas.width,
-              nextBlockCanvas.height
-            );
+          const centerWidth = (canvas.width * 3) / 5;
+          const centerStart = canvas.width / 5;
+          const centerEnd = centerStart + centerWidth;
 
-            // Set the fill color
-            nextBlockCtx.fillStyle = "blue";
+          // If the block is outside either side, put it to that side
+          if (currentBlock.x < centerStart) {
+            currentBlock.x = centerStart;
+          } else if (currentBlock.x > centerEnd - currentBlock.width) {
+            currentBlock.x = centerEnd - currentBlock.width;
+          }
 
-            // Draw a rectangle with the fill color in the center of the canvas
-            nextBlockCtx.fillRect(
-              nextBlockCanvas.width / 2 - 50 / 2,
-              nextBlockCanvas.height / 2 - 50 / 2,
-              50,
-              50
-            );
-          </script>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Current Score: {{SCORE}}</li>
-            <li class="list-group-item">Level: {{LEVEL}}</li>
-          </ul>
-        </div>
-      </div>
+          if (currentBlock.y > canvas.height - currentBlock.height) {
+            // Reset the block to the top of the screen
+            currentBlock.y = canvas.height - currentBlock.height;
+          }
+        }
+
+        function drawPlayerList() {
+          // Draw player list on the left side
+          ctx.fillStyle = "#333"; // Background color
+          ctx.fillRect(10, 10, 180, canvas.height - 20); // Draw a background rectangle
+
+          ctx.fillStyle = "white";
+          ctx.font = "18px Arial";
+
+          for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            const lineHeight = 30;
+            const startY = 40 + i * lineHeight;
+
+            ctx.fillText(`${player.name}: ${player.score}`, 20, startY);
+          }
+        }
+
+        function drawUserInfo() {
+          // Draw user info on the right side
+          ctx.fillStyle = "#333"; // Background color
+          ctx.fillRect(canvas.width - 200, 10, 190, 100); // Draw a background rectangle
+
+          ctx.fillStyle = "white";
+          ctx.font = "18px Arial";
+
+          // Display current user's name and score
+          ctx.fillText(`Name: ${currentUser.name}`, canvas.width - 190, 40);
+          ctx.fillText(`Score: ${currentUser.score}`, canvas.width - 190, 70);
+
+          // Display box with the next block
+          ctx.fillStyle = nextBlock.color;
+          ctx.fillRect(
+            canvas.width - 190,
+            80,
+            nextBlock.width,
+            nextBlock.height
+          );
+        }
+
+        function render() {
+          // Clear the canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Calculate the widths for the three parts
+          const sideWidth = canvas.width / 5;
+          const centerWidth = (canvas.width * 3) / 5;
+
+          // Draw the left side
+          ctx.fillStyle = "green";
+          ctx.fillRect(0, 0, sideWidth, canvas.height);
+
+          // Draw the center game playing area
+          ctx.fillStyle = "blue";
+          ctx.fillRect(sideWidth, 0, centerWidth, canvas.height);
+
+          // Draw the right side
+          ctx.fillStyle = "green";
+          ctx.fillRect(sideWidth + centerWidth, 0, sideWidth, canvas.height);
+
+          // Draw the current block
+          ctx.fillStyle = currentBlock.color;
+          ctx.fillRect(
+            currentBlock.x,
+            currentBlock.y,
+            currentBlock.width,
+            currentBlock.height
+          );
+
+          // Call the update function to modify game-related variables
+          updateGame();
+          drawPlayerList();
+          drawUserInfo();
+
+          // Increment the frame count
+          frameCount++;
+
+          // Request the next animation frame
+          requestAnimationFrame(render);
+        }
+
+        // Start the game loop
+        render();
+
+        // Add event listeners for key presses
+        document.addEventListener("keydown", (event) => {
+          // Move the block left
+          if (event.code === "ArrowLeft") {
+            currentBlock.x -= 50;
+          }
+
+          // Move the block right
+          if (event.code === "ArrowRight") {
+            currentBlock.x += 50;
+          }
+
+          // Move the block up
+          if (event.code === "ArrowUp") {
+            currentBlock.y -= 50;
+          }
+
+          // Move the block down
+          if (event.code === "ArrowDown") {
+            currentBlock.y += 50;
+          }
+        });
+      </script>
     </main>
 
     <footer
