@@ -60,65 +60,67 @@
     </header>
 
     <main
-      class="container-fluid h-100 d-flex flex-column justify-content-center align-items-center"
+      class="container-fluid h-100 d-flex justify-content-around align-items-center gap-2 flex-grow-1"
     >
       <!-- Store all children in a flex row, equally spread, unless mobile at which use flex column -->
-      <div class="scores-stack">
-        <div class="players">
+      <div
+        class="d-flex flex-column flex-md-row flex-grow-1 justify-content-around align-items-md-center gap-2 h-100"
+      >
+        <div class="scores-stack">
+          <!-- Not sure if it makes sense to have the users name in two places on the screen? Maybe mobile only? -->
+          <!-- <div class="players">
           Player:
           <span class="player-name">Current Player</span>
+        </div> -->
+
+          <div class="card">
+            <div class="card-header">Current Player Scores:</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Tim: 600 points</li>
+              <li class="list-group-item">Ada: 300 points</li>
+              <li class="list-group-item">Current Player: 0 points</li>
+            </ul>
+          </div>
         </div>
 
-        <div>
-          <h4>Current Player Scores:</h4>
-          <ul class="notification">
-            <li class="player-name">Tim: 600 points</li>
-            <li class="player-name">Ada: 300 points</li>
-            <li class="player-name">Current Player: 0 points</li>
-          </ul>
+        <div id="canvas-container" class="flex-grow-1">
+          <!-- Canvas will be inflated with JS later on, for the main game loop -->
+          <canvas id="game-canvas" class="h-100"></canvas>
+          <script>
+            // Get the canvas element from the DOM
+            const canvas = document.getElementById("game-canvas");
+
+            // Get the canvas context
+            const ctx = canvas.getContext("2d");
+            // Set the canvas background color
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Set the fill color
+            ctx.fillStyle = "red";
+
+            // Draw a rectangle with the fill color in the center of the canvas
+            ctx.fillRect(
+              canvas.width / 2 - 150 / 2,
+              canvas.height / 2 - 150 / 2,
+              150,
+              150
+            );
+          </script>
         </div>
       </div>
 
-      <br />
+      <!-- Next Tetromino -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Next Block:</h5>
 
-      <div id="canvas-container">
-        <!-- Canvas will be inflated with JS later on, for the main game loop -->
-        <canvas id="canvas" width="400" height="400"></canvas>
-        <script>
-          // Get the canvas element from the DOM
-          const canvas = document.getElementById("canvas");
-
-          // Get the canvas context
-          const ctx = canvas.getContext("2d");
-          // Set the canvas background color
-          ctx.fillStyle = "black";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          // Set the fill color
-          ctx.fillStyle = "red";
-
-          // Draw a rectangle with the fill color in the center of the canvas
-          ctx.fillRect(
-            canvas.width / 2 - 150 / 2,
-            canvas.height / 2 - 150 / 2,
-            150,
-            150
-          );
-        </script>
-      </div>
-
-      <!-- Place into a Flex column when adding css -->
-      <div class="game-info-stack">
-        <div>
-          <h4>Current Score: 99999</h4>
-        </div>
-
-        <div>
-          <h5>Next Block:</h5>
-          <canvas id="next-block" width="100" height="100"></canvas>
+          <canvas id="next-block" class="w-100"></canvas>
           <script>
             // Get the canvas element from the DOM
             const nextBlockCanvas = document.getElementById("next-block");
+
+            nextBlockCanvas.height = nextBlockCanvas.width;
 
             // Get the canvas context
             const nextBlockCtx = nextBlockCanvas.getContext("2d");
@@ -142,10 +144,10 @@
               50
             );
           </script>
-        </div>
-
-        <div>
-          <h4>Level: 7</h4>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Current Score: {{SCORE}}</li>
+            <li class="list-group-item">Level: {{LEVEL}}</li>
+          </ul>
         </div>
       </div>
     </main>
