@@ -4,7 +4,7 @@ import Quote from "./quote";
 
 const About = () => {
   return (
-    <Container>
+    <Container className="flex-grow-1">
       <Row className="justify-content-md-center">
         <Col xs lg="6">
           <Card>

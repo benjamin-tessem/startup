@@ -1,5 +1,5 @@
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 import { About, Login, NotFound, Play, Scores } from "./components";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
