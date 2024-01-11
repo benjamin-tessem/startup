@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { Container } from "react-bootstrap";
+import { gameLoop } from "./game-loop";
 
 const Game = () => {
   const canvasRef = useRef(null);
@@ -9,20 +9,11 @@ const Game = () => {
   // And then within we will render a 1x2 rectangle, where we render a playing field of 10x20 squares
 
   useEffect(() => {
+    /**
+     * @type {HTMLCanvasElement}
+     */
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    // Fill the parents height
-    canvas.height = canvas.parentElement.clientHeight;
-    // Fill the parents width
-    canvas.width = canvas.parentElement.clientWidth;
-
-    // Set the canvas to be centered
-    canvas.style.margin = "auto";
-    canvas.style.display = "block";
-    // Draw a rectangle
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    gameLoop(canvas);
   }, []);
 
   return <canvas ref={canvasRef}></canvas>;

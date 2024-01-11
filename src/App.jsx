@@ -8,7 +8,11 @@ import { Button, Container, Nav, Navbar, Stack } from "react-bootstrap";
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="min-vh-100 min-vw-100 d-flex flex-column justify-content-between align-items-center bg-light">
+      {/* <div className="min-vh-100 min-vw-100 d-flex flex-column justify-content-between align-items-center bg-light"> */}
+      <Stack
+        className="min-vh-100 max-full-width justify-content-between"
+        direction="column"
+      >
         <header className="w-100">
           <Navbar className="navbar navbar-expand-lg bg-light" expand="lg">
             <Container fluid>
@@ -51,13 +55,15 @@ const App = () => {
           </Navbar>
         </header>
 
-        <Routes>
-          <Route path="/" element={<Login />} exact />
-          <Route path="/play" element={<Play />} />
-          <Route path="/scores" element={<Scores />} />
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Stack direction="column" className="h-100 flex-grow-1" id="route-container">
+          <Routes>
+            <Route path="/" element={<Login />} exact />
+            <Route path="/play" element={<Play />} />
+            <Route path="/scores" element={<Scores />} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Stack>
 
         <footer className="container-fluid bg-dark text-light d-flex flex-column justify-content-center align-items-center text-light py-2">
           <div>&copy;Ben Tessem</div>
@@ -68,7 +74,8 @@ const App = () => {
             GitHub
           </a>
         </footer>
-      </div>
+        {/* </div> */}
+      </Stack>
     </BrowserRouter>
   );
 };

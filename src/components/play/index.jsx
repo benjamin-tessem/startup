@@ -6,9 +6,10 @@ import Score from "./score";
 
 const Play = () => {
   return (
-    <Container className="flex-grow-1" style={{
-      maxHeight: "80vh"
-    }}>
+    <Container
+      className="d-flex flex-column flex-grow-1 align-items-center bg-secondary text-light"
+      fluid
+    >
       <h1>Play</h1>
       <Row
         // Make row take up full height of parent
