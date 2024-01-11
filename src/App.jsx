@@ -41,7 +41,9 @@ const App = () => {
                   </Nav.Link>
                 </Nav>
                 <Stack direction="horizontal" gap={2}>
-                  <div className="text-body-secondary me-auto">Current User</div>
+                  <div className="text-body-secondary me-auto">
+                    Current User
+                  </div>
                   <Button className="ms-auto">Logout</Button>
                 </Stack>
               </Navbar.Collapse>
