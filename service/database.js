@@ -7,9 +7,9 @@ const config = require('./dbConfig.json');
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 
 const client = new MongoClient(url);
-
+const db = client.db("tetris");
 const userCollection = db.collection("users");
-const scoreCollection = db.collection("tetris_scores");
+const scoreCollection = db.collection("scores");
 
 /**
  * Gets a user from the database
