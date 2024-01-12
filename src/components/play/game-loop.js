@@ -78,13 +78,13 @@ export class Game {
     * Those two first rows are the boundary, if any tetromino reaches those rows, the game is over
     * @type {Array<Array<number>>}
     */
-    #playfield = Array(playfieldHeight + playfieldHiddenRows).fill(0).map(() => Array(playfieldWidth).fill(0));
+    #playfield = []
 
 
     /**
      * Constructor
      * @param {HTMLCanvasElement} canvas 
-     * @param {() => void} onEnd 
+     * @param {(restart: () => void) => void} onEnd 
      * @param {(tetromino: string) => void} nextBlock 
      * @param {(score: number) => void} setScore 
      */
@@ -95,8 +95,23 @@ export class Game {
         this.nextBlock = nextBlock;
         this.setScore = setScore;
 
+
+        this.buildPlayfield();
+
         // Initialize the tetromino
         this.#tetromino = this.getNextTetromino();
+
+    }
+
+    buildPlayfield = () => {
+        // Start the index at -2, so the first 2 tetrominos are hidden
+        for (let row = -playfieldHiddenRows; row < playfieldHeight; row++) {
+            this.#playfield[row] = [];
+
+            for (let col = 0; col < 10; col++) {
+                this.#playfield[row][col] = 0;
+            }
+        }
     }
 
 
@@ -118,9 +133,10 @@ export class Game {
         const matrix = tetrominos[tetromino];
 
         // I and O start centered, the rest start 1 block to the left
-        const col = this.#playfield[0].length / 2 - matrix[0].length / 2;
+        const col = this.#playfield[0].length / 2 - Math.ceil(matrix[0].length / 2);
 
-        const row = tetromino === 'I' || tetromino === 'O' ? 0 : 1;
+        // I starts 2 blocks above the playfield, the rest start 1 block above
+        const row = tetromino === 'I' || tetromino === 'O' ? -2 : -1;
 
         this.nextBlock(this.#sequence[0])
 
@@ -152,22 +168,19 @@ export class Game {
     isValidMove = (matrix, cellRow, cellCol) => {
         const result = matrix.every((row, dy) => {
             return row.every((val, dx) => {
-                const x = cellCol + dx;
-                const y = cellRow + dy;
+                const col = cellCol + dx;
+                const row = cellRow + dy;
 
-                console.log("Current cell: ", x, y, "Value: ", val)
-
-                return val === 0 || (y >= 0 && x >= 0 && y < this.#playfield.length && x < this.#playfield[0].length && this.#playfield[y][x] === 0);
+                return !(val && (col < 0 || col >= this.#playfield[0].length || row >= this.#playfield.length || this.#playfield[row][col]));
             })
         })
-        console.log(result);
         return result;
     }
 
     /**
- * 
- * @param {{col: number, row: number, matrix: Array<Array<number>>, tetromino: string}} tetromino 
- */
+    * 
+    * @param {{col: number, row: number, matrix: Array<Array<number>>, tetromino: string}} tetromino 
+    */
     placeTetromino = () => {
         // for every item in the tetromino matrix, if it's 1, place it in the playfield
         // if that cell is above the playfield, or rather in row 0 or 1, then game over
@@ -179,17 +192,17 @@ export class Game {
                     if (y < playfieldHiddenRows) {
                         this.displayGameOver();
                     }
-                    this.#playfield[y][x] = val;
+                    this.#playfield[y][x] = this.#tetromino.tetromino;
                 }
             })
         })
 
         // Check for line clears, starting bottom up
-        for (let y = this.#playfield.length - 1; y >= 0; y--) {
+        for (let row = this.#playfield.length - 1; row >= 0; row--) {
             // if the row is full, clear it and shift every row above it down
-            if (this.#playfield[y].every(cell => cell !== 0)) {
+            if (this.#playfield[row].every(cell => cell !== 0)) {
                 // clear the row
-                this.#playfield.splice(y, 1);
+                this.#playfield.splice(row, 1);
                 // add a new row at the top
                 this.#playfield.unshift(Array(playfieldWidth).fill(0));
             }
@@ -200,8 +213,8 @@ export class Game {
     }
 
     randomGenerator = () => {
-        const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
-
+        //const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
+        const sequence = ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"];
         const seqLength = sequence.length;
         // randomly shuffle the sequence using get random int, and set that as the new sequence
         for (let i = 0; i < seqLength; i++) {
@@ -227,34 +240,41 @@ export class Game {
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-
-        this.onEnd();
+        this.removeListeners();
+        this.onEnd(() => this.restart());
     }
 
     restart = () => {
         this.#sequence = [];
+        this.#playfield = [];
+        this.buildPlayfield();
         this.randomGenerator();
         this.#tetromino = this.getNextTetromino();
         this.#gameOver = false;
         this.#playfield.forEach(row => row.fill(0));
         this.setScore?.(0);
+
+        this.setupListeners();
         this.gameLoop();
+
     }
 
     /**
- * Main game loop
- */
+    * Main game loop
+    */
     gameLoop = () => {
         this.#animationFrame = requestAnimationFrame(this.gameLoop);
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // create the playfield grid
-        for (let y = 0; y < this.#playfield.length - playfieldHiddenRows; y++) {
-            for (let x = 0; x < this.#playfield[0].length; x++) {
-                if (this.#playfield[y][x]) {
-                    this.ctx.fillStyle = colors[this.#playfield[y][x]];
-                    this.ctx.fillRect(x * this.#grid, y * this.#grid, this.#grid - 1, this.#grid - 1);
+        for (let row = 0; row < playfieldHeight; row++) {
+            for (let col = 0; col < playfieldWidth; col++) {
+                if (this.#playfield[row][col]) {
+                    const name = this.#playfield[row][col]
+                    this.ctx.fillStyle = colors[name];
+
+                    this.ctx.fillRect(col * this.#grid, row * this.#grid, this.#grid - 1, this.#grid - 1);
                 }
             }
         }
@@ -282,44 +302,72 @@ export class Game {
     }
 
 
-    listeners = () => {
-        document.addEventListener('keydown', (e) => {
-            if (this.#gameOver) {
-                return;
+    /**
+     * 
+     * @param {KeyboardEvent} e 
+     */
+    keyboardListeners = (e) => {
+        if (this.#gameOver) {
+            return;
+        }
+        if (e.key === 'ArrowLeft') {
+            if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col - 1)) {
+                this.#tetromino.col--;
             }
-            if (e.key === 'ArrowLeft') {
-                if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col)) {
-                    this.#tetromino.col--;
-                }
-            } else if (e.key === 'ArrowRight') {
-                if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col)) {
-                    this.#tetromino.col++;
-                }
-            } else if (e.key === 'ArrowDown') {
+        } else if (e.key === 'ArrowRight') {
+            if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col + 1)) {
+                this.#tetromino.col++;
+            }
+        } else if (e.key === ' ') {
+            // Make the piece drop down to the bottom of the playfield when this is pressed, rather than move down 1 block
+            let dropRow = this.#tetromino.row;
+            while (this.isValidMove(this.#tetromino.matrix, dropRow, this.#tetromino.col)) {
+                dropRow++;
+            }
+            this.#tetromino.row = dropRow - 1;
+            this.placeTetromino();
+        }
 
-                if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col)) {
-                    this.#tetromino.row++;
-                }
-            } else if (e.key === "ArrowUp") {
-                const rotated = this.rotate(this.#tetromino.matrix);
-                if (this.isValidMove(rotated, this.#tetromino.row, this.#tetromino.col)) {
-                    this.#tetromino.matrix = rotated;
-                }
+        else if (e.key === 'ArrowDown') {
+
+            if (this.isValidMove(this.#tetromino.matrix, this.#tetromino.row + 1, this.#tetromino.col)) {
+                this.#tetromino.row++;
+
             }
-        })
+        } else if (e.key === "ArrowUp") {
+            const rotated = this.rotate(this.#tetromino.matrix);
+            if (this.isValidMove(rotated, this.#tetromino.row, this.#tetromino.col)) {
+                this.#tetromino.matrix = rotated;
+            }
+        }
     }
+
 
     start = () => {
 
         // Set the canvas to fill the parent container
 
-        this.canvas.height = this.canvas.parentElement.clientHeight;
-        // 10x20 playfield, but we need 2 hidden rows above the playfield
-        this.canvas.width = this.canvas.height / 2;
+        // this.canvas.height = this.canvas.parentElement.clientHeight;
+        // // 10x20 playfield, but we need 2 hidden rows above the playfield
+        // this.canvas.width = this.canvas.height / 2;
         // Set the background color to black so we can see the grid
         this.canvas.style.backgroundColor = 'black';
 
-        this.listeners();
+        // listeners
+        this.setupListeners();
+
         this.gameLoop();
+    }
+
+    setupListeners = () => {
+        document.addEventListener('keydown', this.keyboardListeners);
+
+    }
+
+    removeListeners = () => {
+        document.removeEventListener('keydown', this.keyboardListeners);
+        // Add touch event listeners
+
+
     }
 }
