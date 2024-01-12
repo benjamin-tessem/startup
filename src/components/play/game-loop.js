@@ -150,13 +150,18 @@ export class Game {
     * @param {number} cellCol 
     */
     isValidMove = (matrix, cellRow, cellCol) => {
-        return matrix.every((row, dy) => {
+        const result = matrix.every((row, dy) => {
             return row.every((val, dx) => {
                 const x = cellCol + dx;
                 const y = cellRow + dy;
+
+                console.log("Current cell: ", x, y, "Value: ", val)
+
                 return val === 0 || (y >= 0 && x >= 0 && y < this.#playfield.length && x < this.#playfield[0].length && this.#playfield[y][x] === 0);
             })
         })
+        console.log(result);
+        return result;
     }
 
     /**
@@ -223,19 +228,6 @@ export class Game {
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
-        const restartButton = document.createElement('button');
-        restartButton.innerText = 'Restart';
-        restartButton.style.position = 'absolute';
-        restartButton.style.top = '50%';
-        restartButton.style.left = '50%';
-        restartButton.style.transform = 'translate(-50%, -50%)';
-        restartButton.style.padding = '10px';
-        restartButton.style.fontSize = '24px';
-        restartButton.style.cursor = 'pointer';
-        restartButton.addEventListener('click', () => {
-            restartButton.remove();
-            this.restart();
-        })
         this.onEnd();
     }
 
@@ -320,9 +312,12 @@ export class Game {
     start = () => {
 
         // Set the canvas to fill the parent container
-        this.canvas.width = this.canvas.parentElement.clientWidth;
+
         this.canvas.height = this.canvas.parentElement.clientHeight;
-        
+        // 10x20 playfield, but we need 2 hidden rows above the playfield
+        this.canvas.width = this.canvas.height / 2;
+        // Set the background color to black so we can see the grid
+        this.canvas.style.backgroundColor = 'black';
 
         this.listeners();
         this.gameLoop();

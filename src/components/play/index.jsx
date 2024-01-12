@@ -10,7 +10,6 @@ const Play = () => {
       className="d-flex flex-column flex-grow-1 align-items-center bg-secondary text-light"
       fluid
     >
-      <h1>Play</h1>
       <Row
         // Make row take up full height of parent
         style={{ flex: 1, height: "100%", width: "100%" }}

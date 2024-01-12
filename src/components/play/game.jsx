@@ -15,14 +15,20 @@ const Game = () => {
     const canvas = canvasRef.current;
     const game = new GameLoop(
       canvas,
-      () => console.log("Done"),
+      () => console.log("game over"),
       (brick) => console.log(brick),
       (score) => console.log(score)
     );
     game.start();
   }, []);
 
-  return <canvas ref={canvasRef}></canvas>;
+  return (
+    <div className="w-100 h-100 d-flex justify-content-center align-items-center position-relative">
+      {/* Create a restart button that hovers over the game when the game is over */}
+
+      <canvas ref={canvasRef}></canvas>
+    </div>
+  );
 };
 
 export default Game;
