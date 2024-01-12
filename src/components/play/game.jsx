@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { gameLoop } from "./game-loop";
+import { Game as GameLoop } from "./game-loop";
 
 const Game = () => {
   const canvasRef = useRef(null);
@@ -13,7 +13,13 @@ const Game = () => {
      * @type {HTMLCanvasElement}
      */
     const canvas = canvasRef.current;
-    gameLoop(canvas);
+    const game = new GameLoop(
+      canvas,
+      () => console.log("Done"),
+      (brick) => console.log(brick),
+      (score) => console.log(score)
+    );
+    game.start();
   }, []);
 
   return <canvas ref={canvasRef}></canvas>;

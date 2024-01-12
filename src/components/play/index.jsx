@@ -13,7 +13,7 @@ const Play = () => {
       <h1>Play</h1>
       <Row
         // Make row take up full height of parent
-        style={{ flex: 1, height: "100%" }}
+        style={{ flex: 1, height: "100%", width: "100%" }}
       >
         <Col>
           <Score />
