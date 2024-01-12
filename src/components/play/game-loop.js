@@ -71,6 +71,14 @@ export class Game {
     #gameOver = false;
     #animationFrame = null
 
+    #level = 1;
+    #linesCleared = 0;
+
+    // formula to determine amount of lines to clear to level up
+    #linesToLevelUp = this.#level * 10;
+
+    #speedMultiplier = 1 + (this.#level - 1) * 0.1;
+
     #tetromino = null;
 
     /**
@@ -87,17 +95,20 @@ export class Game {
      * @param {(restart: () => void) => void} onEnd 
      * @param {(tetromino: string) => void} nextBlock 
      * @param {(score: number) => void} setScore 
+     * @param {(level: number) => void} setLevel
      */
-    constructor(canvas, onEnd, nextBlock, setScore) {
+    constructor(canvas, onEnd, nextBlock, setScore, setLevel) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.onEnd = onEnd;
         this.nextBlock = nextBlock;
         this.setScore = setScore;
+        this.setLevel = setLevel;
 
-
+        setLevel(this.#level);
         this.buildPlayfield();
 
+        this.randomGenerator();
         // Initialize the tetromino
         this.#tetromino = this.getNextTetromino();
 
@@ -137,6 +148,10 @@ export class Game {
 
         // I starts 2 blocks above the playfield, the rest start 1 block above
         const row = tetromino === 'I' || tetromino === 'O' ? -2 : -1;
+
+        if (this.#sequence.length === 0) {
+            this.randomGenerator();
+        }
 
         this.nextBlock(this.#sequence[0])
 
@@ -196,25 +211,73 @@ export class Game {
                 }
             })
         })
-
+        let cleared = 0;
         // Check for line clears, starting bottom up
-        for (let row = this.#playfield.length - 1; row >= 0; row--) {
+        for (let row = this.#playfield.length - 1; row >= 0;) {
             // if the row is full, clear it and shift every row above it down
-            if (this.#playfield[row].every(cell => cell !== 0)) {
+            if (this.#playfield[row].every(cell => !!cell)) {
                 // clear the row
                 this.#playfield.splice(row, 1);
                 // add a new row at the top
                 this.#playfield.unshift(Array(playfieldWidth).fill(0));
+                cleared++;
+            } else {
+                // We only decrement the row if we didn't clear it, because if we did, the row above it is now the current row
+                row--;
             }
         }
 
+        // if we cleared any lines, update the score
+        this.setScore?.(this.calcScore(cleared));
+        this.#linesCleared += cleared;
+        this.calcLevel();
         // Get the next tetromino
         this.#tetromino = this.getNextTetromino();
     }
 
+    /**
+     * Calculates the score based on the amount of lines cleared
+     * @param {number} cleared 
+     * @returns 
+     */
+    calcScore = (cleared) => {
+        let score = 0;
+        switch (cleared) {
+            case 1:
+                score = 40 * this.#level;
+                break;
+            case 2:
+                score = 100 * this.#level;
+                break;
+            case 3:
+                score = 300 * this.#level;
+                break;
+            case 4:
+                score = 1200 * this.#level;
+                break;
+            default:
+                break;
+        }
+        return score;
+    }
+
+    /**
+     * Calculates the level based on the amount of lines cleared
+     */
+    calcLevel = () => {
+        // formula to determine amount of lines to clear to level up
+        this.#linesToLevelUp = this.#level * 10;
+        if (this.#linesCleared >= this.#linesToLevelUp) {
+            this.#level++;
+            this.#speedMultiplier = 1 + (this.#level - 1) * 0.1;
+            this.setLevel?.(this.#level);
+            this.#linesCleared = 0;
+        }
+    }
+
     randomGenerator = () => {
-        //const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
-        const sequence = ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"];
+        const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
+        //const sequence = ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"];
         const seqLength = sequence.length;
         // randomly shuffle the sequence using get random int, and set that as the new sequence
         for (let i = 0; i < seqLength; i++) {
@@ -248,15 +311,18 @@ export class Game {
         this.#sequence = [];
         this.#playfield = [];
         this.buildPlayfield();
-        this.randomGenerator();
-        this.#tetromino = this.getNextTetromino();
         this.#gameOver = false;
         this.#playfield.forEach(row => row.fill(0));
         this.setScore?.(0);
-
+        this.#level = 1;
+        this.#linesCleared = 0;
+        this.#speedMultiplier = 1 + (this.#level - 1) * 0.1;
+        this.setLevel?.(this.#level);
+        this.randomGenerator();
+        this.#tetromino = this.getNextTetromino();
+        this?.nextBlock(this.#sequence[0]);
         this.setupListeners();
         this.gameLoop();
-
     }
 
     /**
@@ -280,7 +346,7 @@ export class Game {
         }
 
         if (this.#tetromino) {
-            if (++this.#count > 35) {
+            if (++this.#count > 35 / this.#speedMultiplier) {
                 this.#tetromino.row++;
                 this.#count = 0;
                 if (!this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col)) {
@@ -367,7 +433,5 @@ export class Game {
     removeListeners = () => {
         document.removeEventListener('keydown', this.keyboardListeners);
         // Add touch event listeners
-
-
     }
 }

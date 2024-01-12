@@ -19,9 +19,10 @@ const Game = () => {
     const canvas = canvasRef.current;
     const game = new GameLoop(
       canvas,
-      (callBack) => dispatch({ type: "gameOver", payload: callBack }),
+      (callBack) => dispatch({ type: "gameOver", payload: () => callBack() }),
       (brick) => dispatch({ type: "next", payload: brick }),
-      (score) => dispatch({ type: "score", payload: score })
+      (score) => dispatch({ type: "score", payload: score }),
+      (level) => dispatch({ type: "level", payload: level })
     );
     game.start();
   }, [dispatch]);

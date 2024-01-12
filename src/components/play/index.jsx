@@ -5,7 +5,7 @@ import Board from "./game";
 import Next from "./next";
 import Score from "./score";
 
-export const GameContext = createContext({});
+export const GameContext = createContext({ level: 1 });
 
 const Play = () => {
   // The state should have a state for the score, next brick and if the game has ended, as well as a restart function
@@ -19,6 +19,7 @@ const Play = () => {
             next: null,
             gameOver: false,
             restartGame: null,
+            level: 1,
           };
         case "gameOver":
           return {
@@ -35,6 +36,11 @@ const Play = () => {
           return {
             ...state,
             next: action.payload,
+          };
+        case "level":
+          return {
+            ...state,
+            level: action.payload,
           };
         default:
           return state;
@@ -62,7 +68,7 @@ const Play = () => {
           <Col>
             <Score />
           </Col>
-          <Col xs sm="8" lg="8">
+          <Col xs="12" lg="4" className="py-2">
             <Board />
           </Col>
           <Col>
