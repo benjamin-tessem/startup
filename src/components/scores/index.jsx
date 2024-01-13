@@ -1,11 +1,29 @@
-import { Container, Stack, Table } from "react-bootstrap";
-
+import { Container, Stack, Table, Toast } from "react-bootstrap";
+import { useEffect, useState } from "react";
 const Scores = () => {
+  const [scores, setScores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      const response = await fetch("/api/scores");
+      if (response.ok) {
+        const scores = await response.json();
+        setScores(scores);
+      } else {
+        setError(true);
+      }
+      setLoading(false);
+    };
+    fetchScores();
+  }, []);
   return (
-    <Stack className="justify-content-center align-items-center bg-secondary">
+    <Stack className="justify-content-center align-items-center bg-secondary position-relative">
       <Container>
         <Stack gap={2}>
           <h1 className="text-center text-light">Top Scores</h1>
+          {loading && <div className="text-center text-light">Loading...</div>}
           <Table bordered hover>
             <caption className="d-none">Top Scores</caption>
             <thead>
@@ -17,28 +35,30 @@ const Scores = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Jim</td>
-                <td>600</td>
-                <td>Jan 22, 2024</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Charles</td>
-                <td>500</td>
-                <td>June 2, 2023</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Alice</td>
-                <td>300</td>
-                <td>July 3, 2023</td>
-              </tr>
+              {scores?.map((score, index) => (
+                <tr key={score._id}>
+                  <td>{index + 1}</td>
+                  <td>{score.username}</td>
+                  <td>{score.score}</td>
+                  <td>{new Date(score.date).toDateString()}</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Stack>
       </Container>
+
+      <Toast
+        className="position-absolute top-0 end-0 m-3"
+        onClose={() => setError(false)}
+        show={error}
+        bg="danger"
+      >
+        <Toast.Header>
+          <strong className="me-auto">Error</strong>
+        </Toast.Header>
+        <Toast.Body>Failed to fetch results.</Toast.Body>
+      </Toast>
     </Stack>
   );
 };

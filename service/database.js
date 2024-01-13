@@ -54,7 +54,9 @@ const createUser = async (username, password) => {
 const createScore = async (username, score) => {
     await scoreCollection.insertOne({
         username: username,
-        score: score
+        score: score,
+        // Set the date to a iso string
+        date: new Date().toISOString()
     });
 }
 
