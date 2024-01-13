@@ -115,7 +115,7 @@ securedRouter.post("/auth/logout", async (req, res) => {
     res.status(204).send();
 })
 
-securedRouter.post("/scores", async (req, res) => {
+securedRouter.post("/score", async (req, res) => {
     const score = req.body?.score;
     const token = req.cookies?.auth;
 

@@ -37,13 +37,16 @@ const createUser = async (username, password) => {
     const hash = await bcrypt.hash(password, 10);
     const token = uuid.v4();
 
-    const result = await userCollection.insertOne({
+    await userCollection.insertOne({
         username: username,
         password: hash,
         token: token
     });
 
-    return result
+    return {
+        username: username,
+        token: token
+    };
 }
 
 /**
