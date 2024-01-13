@@ -1,4 +1,5 @@
 # Tetris Rush
+
 <sub>Let it be known I wanted to use Typescript</sub>
 
 ## Description deliverable
@@ -54,6 +55,8 @@ For this deliverable I scaffolded the structure of my application in HTML
 
 ### CSS Deliverables
 
+For this deliverable I styled my application with CSS
+
 - [x] Styled Header, footer and main content - The header, footer, and main content are all styled with CSS
 - [x] Navigation Elements - The navigation elements are styled with CSS, and change color when hovered over, as well as when the selected page is active
 - [x] Responsive Design - The application is responsive and works on mobile and desktop. The navbar collapses into a hamburger menu on mobile, and the content is responsive to different screen sizes
@@ -63,6 +66,8 @@ For this deliverable I scaffolded the structure of my application in HTML
 
 ### JavaScript Deliverables
 
+For this deliverable I added JavaScript to my application, specifically logic for the game, and logging in.
+
 - [x] Login - The login page has a form that allows you to login with a username and password, when you login, you are redirected to the game page
 - [x] Canvas - The tetris game is rendered on a canvas element, and the canvas is managed by JavaScript
 - [x] Database - The top scores are rendered with data being retrieved from the database
@@ -71,6 +76,8 @@ For this deliverable I scaffolded the structure of my application in HTML
 
 ### Service Deliverables
 
+For this deliverable I built a backend in ExpressJS that receives new scores and returns the overall leaderboard
+
 - [x] HTTPS Service built using Express - Done
 - [x] Frontend Served from Express Static Middleware - Done
 - [x] Frontend makes ajax request to third party API - Done, found on the about page, data pulled in from a Dad Joke from a third party API
@@ -78,6 +85,8 @@ For this deliverable I scaffolded the structure of my application in HTML
 - [x] Frontend makes ajax request to backend service - Done, the frontend makes requests to the backend to retrieve scores, submit scores, and login
 
 ### DB/Login Deliverables
+
+For this deliverable I built a database in MongoDB that stores user credentials and scores, and associates the score with the authenticated user
 
 - [x] Supports new user registration - Done
 - [x] Supports existing user authentication - Done
@@ -88,12 +97,16 @@ For this deliverable I scaffolded the structure of my application in HTML
 
 ### Websocket Deliverables
 
+For this deliverable I built a websocket that sends the score of each player to all other players in real time
+
 - [x] Backend Listen for Websocket Connections - Done
 - [x] Frontend Connect to Websocket - Done
 - [x] Data sent over WebSocket - Done
 - [x] WebSocket data is displayed - Done
 
 ### React Deliverables
+
+For this deliverable I ported my application to React
 
 - [x] Bundled using Vite - Done
 - [x] Multiple functional React components - Done
