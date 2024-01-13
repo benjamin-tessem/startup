@@ -16,5 +16,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    // Disable prop validation, since I was told I can't use typescript and I can't install the prop-types package
+    'react/prop-types': 'off',
   },
 }

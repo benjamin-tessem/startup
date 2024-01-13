@@ -11,7 +11,6 @@ const Game = () => {
 
   // The main gameplay loop will be played on the canvas, the canvas needs to take up the entire size of the parent,
   // And then within we will render a 1x2 rectangle, where we render a playing field of 10x20 squares
-  console.log(state);
   useEffect(() => {
     /**
      * @type {HTMLCanvasElement}

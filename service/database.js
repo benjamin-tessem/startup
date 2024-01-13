@@ -60,7 +60,7 @@ const createScore = async (username, score) => {
 
 /**
  * Get the top 10 scores
- * @returns {Array<object>} An array of high scores
+ * @returns {Promise<Array<object>>} An array of high scores
  */
 const getHighScores = async () => {
     const scores = await scoreCollection.find().sort({ score: -1 }).limit(10).toArray();

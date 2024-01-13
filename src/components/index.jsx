@@ -3,3 +3,8 @@ export { default as Login } from "./login";
 export { default as Play } from "./play";
 export { default as Scores } from "./scores";
 export { default as NotFound } from "./not-found";
+export { default as AuthProvider } from "./auth-status";
+export { default as NavBar } from "./nav";
+export { default as MainView } from "./main-view";
+export { default as Footer } from "./footer";
+export { default as Authenticated } from "./authenticated";

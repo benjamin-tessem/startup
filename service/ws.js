@@ -1,7 +1,7 @@
-const { WebSockerServer } = require('ws');
+const { WebSocketServer } = require('ws');
 
 const peerProxy = (httpServer) => {
-    const wss = new WebSockerServer({ server: httpServer });
+    const wss = new WebSocketServer({ server: httpServer });
 
     httpServer.on('upgrade', (req, socket, head) => {
         wss.handleUpgrade(req, socket, head, (socket) => {
