@@ -1,4 +1,5 @@
 # Tetris Rush
+<sub>Let it be known I wanted to use Typescript</sub>
 
 ## Description deliverable
 
@@ -50,3 +51,51 @@ For this deliverable I scaffolded the structure of my application in HTML
 - [x] Use Name Display - The logged in user is displayed in the Navbar next to a logout button
 - [x] DB/Login - The login page has a input box for username and password for login. The scoreboard and live scores represent data being pulled from the database.
 - [x] Websocket - The live scores are updated in real time using websockets
+
+### CSS Deliverables
+
+- [x] Styled Header, footer and main content - The header, footer, and main content are all styled with CSS
+- [x] Navigation Elements - The navigation elements are styled with CSS, and change color when hovered over, as well as when the selected page is active
+- [x] Responsive Design - The application is responsive and works on mobile and desktop. The navbar collapses into a hamburger menu on mobile, and the content is responsive to different screen sizes
+- [x] Application Elements - All elements of the application are styled with CSS, including the login form, the tetris game, the leaderboard, and the about page
+- [x] Application Text - All text is styled with CSS, including the text on the login page, the text on the about page, the text on the leaderboard, and the text on the game page
+- [x] Application Images - The image on the about page is contrasted with CSS to make it more visible, and resize within a card according to the screen size
+
+### JavaScript Deliverables
+
+- [x] Login - The login page has a form that allows you to login with a username and password, when you login, you are redirected to the game page
+- [x] Canvas - The tetris game is rendered on a canvas element, and the canvas is managed by JavaScript
+- [x] Database - The top scores are rendered with data being retrieved from the database
+- [x] WebSocket - The live score under the game is updated in real time using websockets
+- [x] Application Logic - The game logic is implemented in JavaScript, including the tetris game, the score, and the leaderboard, routes are dynamically determined based off of the users authorization, data is fetched with JS
+
+### Service Deliverables
+
+- [x] HTTPS Service built using Express - Done
+- [x] Frontend Served from Express Static Middleware - Done
+- [x] Frontend makes ajax request to third party API - Done, found on the about page, data pulled in from a Dad Joke from a third party API
+- [x] Backend provides endpoints - Done, there are endpoints for login, retrieving scores, submitting scores, and authenticating users
+- [x] Frontend makes ajax request to backend service - Done, the frontend makes requests to the backend to retrieve scores, submit scores, and login
+
+### DB/Login Deliverables
+
+- [x] Supports new user registration - Done
+- [x] Supports existing user authentication - Done
+- [x] Stores application data in MongoDB - Done
+- [x] Passwords are hashed and salted - Done
+- [x] Stores and retrieves credentials in MongoDB - Done
+- [x] Restricts application functionality based upon authentication - Done
+
+### Websocket Deliverables
+
+- [x] Backend Listen for Websocket Connections - Done
+- [x] Frontend Connect to Websocket - Done
+- [x] Data sent over WebSocket - Done
+- [x] WebSocket data is displayed - Done
+
+### React Deliverables
+
+- [x] Bundled using Vite - Done
+- [x] Multiple functional React components - Done
+- [x] React Router - Done
+- [x] React Hooks - Done
