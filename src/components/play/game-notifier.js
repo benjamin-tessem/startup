@@ -25,7 +25,10 @@ class GameEventNotifier {
     #listeners;
     constructor() {
         this.#listeners = [];
+        this.setupWebSocket();
+    }
 
+    setupWebSocket() {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const host = window.location.host;
         this.#ws = new WebSocket(`${protocol}//${host}/ws`);
@@ -40,6 +43,11 @@ class GameEventNotifier {
             this.notify(event);
         }
 
+        // reconnect on close
+        this.#ws.onclose = () => {
+            console.log('WebSocket closed');
+            this.setupWebSocket();
+        }
     }
 
     /**
@@ -76,7 +84,10 @@ class GameEventNotifier {
      * @param {string} value 
      */
     broadcast(from, value) {
-        console.log('broadcasting', from, value);
+        if (this.#ws.readyState !== WebSocket.OPEN) {
+            console.error('WebSocket not open');
+            return;
+        }
         this.#ws.send(JSON.stringify(new EventMessage(from, value)));
     }
 }
