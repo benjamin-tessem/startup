@@ -279,8 +279,7 @@ export class Game {
     }
 
     randomGenerator = () => {
-        //const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
-        const sequence = ["I", "I", "I"];
+        const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
         const seqLength = sequence.length;
         // randomly shuffle the sequence using get random int, and set that as the new sequence
         for (let i = 0; i < seqLength; i++) {
