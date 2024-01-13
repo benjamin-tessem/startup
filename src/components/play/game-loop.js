@@ -80,6 +80,7 @@ export class Game {
     #speedMultiplier = 1 + (this.#level - 1) * 0.1;
 
     #tetromino = null;
+    #score = 0;
 
     /**
     * First 2 rows are hidden, so we add 2 to the height
@@ -92,7 +93,7 @@ export class Game {
     /**
      * Constructor
      * @param {HTMLCanvasElement} canvas 
-     * @param {(restart: () => void) => void} onEnd 
+     * @param {(score: number, restart: () => void) => void} onEnd 
      * @param {(tetromino: string) => void} nextBlock 
      * @param {(score: number) => void} setScore 
      * @param {(level: number) => void} setLevel
@@ -228,7 +229,9 @@ export class Game {
         }
 
         // if we cleared any lines, update the score
-        this.setScore?.(this.calcScore(cleared));
+        const calcedScore = this.calcScore(cleared);
+        this.#score += calcedScore;
+        this.setScore?.(this.#score);
         this.#linesCleared += cleared;
         this.calcLevel();
         // Get the next tetromino
@@ -276,8 +279,8 @@ export class Game {
     }
 
     randomGenerator = () => {
-        const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
-        //const sequence = ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"];
+        //const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
+        const sequence = ["I", "I", "I"];
         const seqLength = sequence.length;
         // randomly shuffle the sequence using get random int, and set that as the new sequence
         for (let i = 0; i < seqLength; i++) {
@@ -297,23 +300,27 @@ export class Game {
         // Display game over text
         // Give a button to restart the game
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, this.ctx.canvas.height / 2 - 30, this.ctx.canvas.width, 60);
+        // Set the opacity to 50%
+        this.ctx.globalAlpha = 0.5;
+        this.ctx.fillRect(0, this.ctx.canvas.height / 3 - 30, this.ctx.canvas.width, 60);
         this.ctx.fillStyle = 'red';
         this.ctx.font = '36px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 3);
         this.removeListeners();
-        this.onEnd(() => this.restart());
+        this.onEnd(this.#score, () => this.restart());
     }
 
     restart = () => {
+        this.ctx.globalAlpha = 1;
         this.#sequence = [];
         this.#playfield = [];
+        this.#score = 0;
+        this.setScore?.(0);
         this.buildPlayfield();
         this.#gameOver = false;
         this.#playfield.forEach(row => row.fill(0));
-        this.setScore?.(0);
         this.#level = 1;
         this.#linesCleared = 0;
         this.#speedMultiplier = 1 + (this.#level - 1) * 0.1;
@@ -346,7 +353,7 @@ export class Game {
         }
 
         if (this.#tetromino) {
-            if (++this.#count > 35 / this.#speedMultiplier) {
+            if (++this.#count > 48 / this.#speedMultiplier) {
                 this.#tetromino.row++;
                 this.#count = 0;
                 if (!this.isValidMove(this.#tetromino.matrix, this.#tetromino.row, this.#tetromino.col)) {
@@ -410,15 +417,6 @@ export class Game {
 
 
     start = () => {
-
-        // Set the canvas to fill the parent container
-
-        // this.canvas.height = this.canvas.parentElement.clientHeight;
-        // // 10x20 playfield, but we need 2 hidden rows above the playfield
-        // this.canvas.width = this.canvas.height / 2;
-        // Set the background color to black so we can see the grid
-        this.canvas.style.backgroundColor = 'black';
-
         // listeners
         this.setupListeners();
 

@@ -5,7 +5,7 @@ import Board from "./game";
 import Next from "./next";
 import Score from "./score";
 
-export const GameContext = createContext({ level: 1 });
+export const GameContext = createContext({ level: 1, gameStarted: false });
 
 const Play = () => {
   // The state should have a state for the score, next brick and if the game has ended, as well as a restart function
@@ -30,7 +30,7 @@ const Play = () => {
         case "score":
           return {
             ...state,
-            score: state.score + action.payload,
+            score: action.payload,
           };
         case "next":
           return {
@@ -41,6 +41,19 @@ const Play = () => {
           return {
             ...state,
             level: action.payload,
+          };
+        case "setStartGame":
+          // This is a function to trigger the class to start the game
+          return {
+            ...state,
+            startGame: action.payload,
+          };
+        case "startGame":
+          // This is a function to trigger the class to start the game
+          state?.startGame();
+          return {
+            ...state,
+            gameStarted: true,
           };
         default:
           return state;
